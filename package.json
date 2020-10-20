@@ -1,0 +1,28 @@
+{
+  "name": "portfolio",
+  "version": "1.0.0",
+  "description": "cms and user sysmtem for portfolio",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MaximilianHollis/portfolio.git"
+  },
+  "keywords": [
+    "cms",
+    "express"
+  ],
+  "author": "Maximilian Hollis",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MaximilianHollis/portfolio/issues"
+  },
+  "homepage": "https://github.com/MaximilianHollis/portfolio#readme",
+  "dependencies": {
+    "cookie-parser": "^1.4.5",
+    "express": "^4.17.1",
+    "mongoose": "^5.10.9"
+  }
+}

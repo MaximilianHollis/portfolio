@@ -22,7 +22,10 @@
   "homepage": "https://github.com/MaximilianHollis/portfolio#readme",
   "dependencies": {
     "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
-    "mongoose": "^5.10.9"
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.10.9",
+    "passport": "^0.4.1"
   }
 }

@@ -2,8 +2,11 @@ const express = require('express');
 const app = express();
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
+const morgan = require('morgan');
+
 app.use(cookieParser());
 app.use(express.json());
+app.use(morgan('tiny'));
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
   }

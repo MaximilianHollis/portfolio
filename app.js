@@ -12,6 +12,9 @@ app.use(cors())
 app.use(cookieParser);
 app.use(express.json());
 
+//enabling preflight for all requests
+app.options('*', cors());
+
 app.use(function (req, res, next) {
     // Frontend Origin
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');

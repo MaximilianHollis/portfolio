@@ -12,9 +12,6 @@ const signToken = userID => {
     }, "Maskify", {expiresIn: "1h"});
 }
 
-//enabling preflight for all requests
-userRouter.options('*', cors());
-
 userRouter.post('/register', (req, res) => {
     const { username, password, role } = req.body;
     User.findOne({ username }, (err, user) => {

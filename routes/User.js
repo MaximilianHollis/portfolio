@@ -4,6 +4,9 @@ const passport = require('passport');
 const passportConfig = require('../passport');
 const JWT = require('jsonwebtoken');
 const User = require('../models/User');
+var cors = require('cors')
+
+userRouter.use(cors());
 
 const signToken = userID => {
     return JWT.sigh({
@@ -12,7 +15,8 @@ const signToken = userID => {
     }, "Maskify", {expiresIn: "1h"});
 }
 
-userRouter.post('/register', (req, res) => {
+userRouter.post('/register', cors(), (req, res) => {
+    console.log('heloooooooooooooo')
     const { username, password, role } = req.body;
     User.findOne({ username }, (err, user) => {
         if (err) {
@@ -33,7 +37,7 @@ userRouter.post('/register', (req, res) => {
     });
 });
 
-userRouter.post('/login', passport.authenticate('local', { session: false }), (req, res) => {
+userRouter.post('/login', cors(), passport.authenticate('local', { session: false }), (req, res) => {
     if (req.isAuthenticated()) {
         const { _id, username, role } = req.user;
         const token = signToken(_id);
@@ -45,9 +49,14 @@ userRouter.post('/login', passport.authenticate('local', { session: false }), (r
     }
 });
 
-userRouter.get('/logout', passport.authenticate('jwt', { session: false }), (req, res) => {
+userRouter.get('/logout', cors(), passport.authenticate('jwt', { session: false }), (req, res) => {
     res.setHeader('set-cookie', `access_token=null`)
     res.json({ user: { username: "", role: "" }, success: true });
 });
 
-module.exports = userRouter
+userRouter.get('/authenticated', cors(), passport.authenticate('jwt', { session: false }), (req, res) => {
+    const { username, role } = req.user;
+    res.status(200).json({ isAuthenticated: true, user: { username, role } });
+});
+
+module.exports = userRouter;

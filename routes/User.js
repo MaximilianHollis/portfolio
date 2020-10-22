@@ -4,12 +4,13 @@ const passport = require('passport');
 const passportConfig = require('../passport');
 const JWT = require('jsonwebtoken');
 const User = require('../models/User');
-var cors = require('cors')
 
-userRouter.use(cors({
-    origin: 'http://localhost:3000',
-    optionsSuccessStatus: 200 // being nice to old browsers :)
-}));
+const signToken = userID => {
+    return JWT.sigh({
+        iss: "Maskify",
+        sub: userID
+    }, "Maskify", {expiresIn: "1h"});
+}
 
 //enabling preflight for all requests
 userRouter.options('*', cors());

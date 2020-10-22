@@ -1,7 +1,14 @@
-const express = requrie('express');
+const express = require('express');
 const app = express();
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+  }
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
+var cors = require('cors')
+
+app.use(cors())
+
 app.use(cookieParser);
 app.use(express.json());
 
@@ -26,9 +33,10 @@ mongoose.connect('mongodb://localhost:27017/portfolio', { useNewUrlParser: true,
     console.log('successfully connected to mongodb');
 });
 
-const userRouter = require('./routers/User');
+const userRouter = require('./routes/User.js');
 app.use('/user', userRouter)
 
-app.listen(5000, () => {
-    console.log('Backend started on port 5000')
+const port = process.env.PORT || 5000;
+app.listen(port, () => {
+    console.log(`Backend started on port ${port}`)
 })

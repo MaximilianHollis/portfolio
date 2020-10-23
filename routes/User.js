@@ -67,4 +67,6 @@ userRouter.get('/authenticated', cors(), passport.authenticate('jwt', { session:
     res.status(200).json({ isAuthenticated: true, user: { username, role } });
 });
 
+userRouter.post('/portfolio', passport.authenticate('jwt'))
+
 module.exports = userRouter;

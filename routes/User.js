@@ -6,17 +6,25 @@ const JWT = require('jsonwebtoken');
 const User = require('../models/User');
 var cors = require('cors')
 
-userRouter.use(cors());
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
+
+const corsOptions = {
+    credentials: true,
+    origin: 'http://localhost:5001'
+}
+
+userRouter.use(cors(corsOptions));
 
 const signToken = userID => {
-    return JWT.sigh({
-        iss: "Maskify",
+    return JWT.sign({
+        iss: "Portfolio",
         sub: userID
-    }, "Maskify", {expiresIn: "1h"});
+    }, process.env.SECRET, {expiresIn: "1h"});
 }
 
 userRouter.post('/register', cors(), (req, res) => {
-    console.log('heloooooooooooooo')
     const { username, password, role } = req.body;
     User.findOne({ username }, (err, user) => {
         if (err) {
@@ -41,16 +49,16 @@ userRouter.post('/login', cors(), passport.authenticate('local', { session: fals
     if (req.isAuthenticated()) {
         const { _id, username, role } = req.user;
         const token = signToken(_id);
-        //for prod, make the cookies secure, and change the domain OR ELSE!!!!!
-        //res.cookie('access_token',token,{secure: false, sameSite: 'strict', path:'/'}); 
-        //convert to nextjs api routes :)
-        res.setHeader('set-cookie', `access_token=${token}`)
+        //hello token aka dan :D
+        res.cookie('access_token', token, {
+            httpOnly: true
+        })
         res.status(200).json({ isAuthenticated: true, user: { username, role } });
     }
 });
 
 userRouter.get('/logout', cors(), passport.authenticate('jwt', { session: false }), (req, res) => {
-    res.setHeader('set-cookie', `access_token=null`)
+    res.clearCookie('access_token');
     res.json({ user: { username: "", role: "" }, success: true });
 });
 

@@ -5,30 +5,42 @@ const User = require('./models/User');
 
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
-  }
+}
 
 const cookieExtractor = req => {
     let token = null;
     if (req && req.cookies) {
-        token = req.cookies["access_token"];
+        token = req.cookies.access_token;
     }
     return token;
 }
 
 // authorization 
-passport.use(new JwtStrategy({
-    jwtFromRequest: cookieExtractor,
-    secretOrKey: process.env.SECRET
-}, (payload, done) => {
-    User.findById({ _id: payload.sub }, (err, user) => {
-        if (err)
-            return done(err, false);
-        if (user)
-            return done(null, user);
-        else
-            return done(null, false);
-    });
-}));
+passport.use(
+    new JwtStrategy(
+        {
+            secretOrKey: process.env.SECRET,
+            jwtFromRequest: cookieExtractor
+        }, 
+        async (token, done) => {
+            try {
+                User.findById({ _id: token.sub }, (err, user) => {
+                    if (err) {
+                        return done(err, false);
+                    }
+                    if (user) {
+                        return done(null, user);
+                    }
+                    else {
+                        return done(null, false);
+                    }
+                });
+            } catch (error) {
+                console.log('e')
+                done(error);
+            }
+
+        }));
 
 // authenticated local strategy using username and password
 passport.use(new LocalStrategy((username, password, done) => {

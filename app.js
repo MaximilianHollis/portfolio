@@ -7,6 +7,7 @@ const morgan = require('morgan');
 app.use(cookieParser());
 app.use(express.json());
 app.use(morgan('tiny'));
+
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
   }

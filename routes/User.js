@@ -4,6 +4,8 @@ const passport = require('passport');
 const passportConfig = require('../passport');
 const JWT = require('jsonwebtoken');
 const User = require('../models/User');
+const Portfolio = require('../models/Portfolio');
+
 var cors = require('cors')
 
 if (process.env.NODE_ENV !== 'production') {
@@ -21,7 +23,7 @@ const signToken = userID => {
     return JWT.sign({
         iss: "Portfolio",
         sub: userID
-    }, process.env.SECRET, {expiresIn: "1h"});
+    }, process.env.SECRET, { expiresIn: "1h" });
 }
 
 userRouter.post('/register', cors(), (req, res) => {
@@ -67,6 +69,23 @@ userRouter.get('/authenticated', cors(), passport.authenticate('jwt', { session:
     res.status(200).json({ isAuthenticated: true, user: { username, role } });
 });
 
-userRouter.post('/portfolio', passport.authenticate('jwt'))
+userRouter.post('/portfolio', passport.authenticate('jwt', { session: false }), (req, res) => {
+    const { name, title } = req.body;
+    const portfolio = new Portfolio({ name, title });
+    portfolio.save(err => {
+        if (err) {
+            res.status(500).json({ message: { msgBody: "Error has occured", msgError: true } });
+        }
+        else {
+            req.user.portfolios.push(portfolio);
+            req.user.save(err => {
+                if (err)
+                    res.status(500).json({ message: { msgBody: "Error has occured", msgError: true } });
+                else
+                    res.status(200).json({ message: { msgBody: "Successfully created data node", msgError: false } });
+            });
+        }
+    })
+});
 
 module.exports = userRouter;

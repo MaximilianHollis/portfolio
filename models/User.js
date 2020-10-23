@@ -17,7 +17,7 @@ const UserSchema = new mongoose.Schema({
         enum: ['user', 'admin'],
         required: true
     },
-    portfolio: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Portfolio' }],
+    portfolios: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Portfolio' }],
 });
 
 UserSchema.pre('save', function (next) {
